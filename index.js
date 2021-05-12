@@ -7,7 +7,8 @@ const { Cryptonator } = require('node-crypto-api');
 const cryptonator = new Cryptonator();
  
 
-/* keeping an error list for failed entries
+/* 
+   keeping an error list for failed entries
    each node holds time and the rate at that time
 */
 class errorNode {
@@ -22,7 +23,8 @@ let errorList = [];
 
 //ticker
  function getBTC() {
-     /* to avoid infinite loop, we take the current length of the error list, because the list will change,
+     /* 
+        to avoid infinite loop, we take the current length of the error list, because the list will change,
         and try to add it to airtable. upon each trial we shift the list. 
         if we fail again, node is appended again to the list.
     */
@@ -50,7 +52,8 @@ function addToAirbase(time,rate) {
         }
     }], {typecast: true},function(err, records) {
         if (err) {
-            /*  if we fail entering entries to airtable, we save the time and the rate, 
+            /*  
+                if we fail writing entries to airtable, we save the time and the rate, 
                 and append it to error list
             */
             node = new errorNode(time,rate);
