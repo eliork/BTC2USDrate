@@ -1,4 +1,3 @@
-//const base = require('airtable').base('app53J40fOl2DXe7L');
 
 var Airtable = require('airtable');
 var base = new Airtable({apiKey: 'keyJSZmlI8uWpSwtX'}).base('app53J40fOl2DXe7L');
@@ -7,6 +6,10 @@ const { Cryptonator } = require('node-crypto-api');
  
 const cryptonator = new Cryptonator();
  
+
+/* keeping an error list for failed entries
+   each node holds time and the rate at that time
+*/
 class errorNode {
     constructor(time,rate) {
         this.time = time;
@@ -14,11 +17,17 @@ class errorNode {
     }
 }
 
+// init error list
 let errorList = [];
 
 //ticker
  function getBTC() {
-    for (let i=0; i < errorList.length; i++) {
+     /* to avoid infinite loop, we take the current length of the error list, because the list will change,
+        and try to add it to airtable. upon each trial we shift the list. 
+        if we fail again, node is appended again to the list.
+    */
+    let currentErrorListLength = errorList.length; 
+    for (let i=0; i < currentErrorListLength; i++) {
         addToAirbase(errorList[0].time,errorList[0].rate);
         errorList.shift();
     }
@@ -41,7 +50,9 @@ function addToAirbase(time,rate) {
         }
     }], {typecast: true},function(err, records) {
         if (err) {
-            //console.error(err);
+            /*  if we fail entering entries to airtable, we save the time and the rate, 
+                and append it to error list
+            */
             node = new errorNode(time,rate);
             errorList.push(node);
             return;
@@ -52,4 +63,5 @@ function addToAirbase(time,rate) {
       });
 }
 
-setInterval(getBTC,60000)
+//code runs every minute until termination
+setInterval(getBTC,60000);
