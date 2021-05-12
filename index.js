@@ -1,4 +1,3 @@
-//const base = require('airtable').base('app53J40fOl2DXe7L');
 
 var Airtable = require('airtable');
 var base = new Airtable({apiKey: 'keyJSZmlI8uWpSwtX'}).base('app53J40fOl2DXe7L');
